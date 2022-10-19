@@ -19,90 +19,34 @@ session_start();
 <body>
   <center>
     <label>Ajouter un article</label>
-    <form class="table">
+    <form class="table" method="POST">
       <div class="form-group">
         <label for="nom">Nom</label>
-        <input type="text" class="form-control" id="nom"  placeholder="Entrez le nom de l'article">
+        <input type="text" class="form-control" name="nom" id="nom"  placeholder="Entrez le nom de l'article" required>
       </div>
       <div class="form-group">
         <label for="reference">Reference</label>
-        <input type="text" class="form-control" id="reference" placeholder="Entrez la référence">
+        <input type="text" class="form-control" name="reference" id="reference"  placeholder="Entrez la référence" required>
       </div>
       <div class="form-group">
         <label for="prix">Prix</label>
-        <input type="text" class="form-control" id="prix" placeholder="Entrez le prix">
+        <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" required>
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </center>
+
+
+
+
+  <?php
+  include "connection.php";
+  if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
+   $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
+   $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 0]);
+   header("location:articles.php");  
+  }
+
+  ?>
 </body>
-<!-- <center>
-    <label>Sign up </label>
-    <br><br><br>
-    <form action="authentification.php" name="form" id="form" method="post">   
-    <p>
-        <label for="username">username:</label>
-        <input type="text" name="username" id="username" required>
-    </p>    
-    <p>
-        <label for="mail">adresse mail:</label>
-        <input type="text" name="mail" id="mail" required>
-    </p>   
-    <p>
-        <label for="password">password:</label>
-        <input type="password" name="password" id="password" required>
-    </p>
-    <p>
-        <label for="confpassword">confirm password:</label>
-        <input type="password" name="confpassword" id="confpassword" required>
-    </p>
-    <p>
-        <input type="submit" value="S'enregistrer">
-    </p>
-    <div><a href="login.php">Déja un compte ?</a></div>
-</center> 
-
-
-
-
-
-
-
-
-
-if(isset($_POST['username'])){   /* vérifie si le formulaire a été envoyé */
-
-    $stmt = $conn->prepare("SELECT username FROM users WHERE username=:username");
-    $stmt->execute(['username' => $_POST["username"]]); 
-    $user = $stmt->fetch();
-    if (empty($user)){
-        $usernamebdd = "";
-    }
-    else { $usernamebdd = $user[0]; }
-
-
-    $stmt = $conn->prepare("SELECT mail FROM users WHERE mail=:mail");
-    $stmt->execute(['mail' => $_POST["mail"]]); 
-    $user = $stmt->fetch();
-    if (empty($user)){
-        $mailbdd = "";
-    }
-    else { $mailbdd = $user[0]; }
-
-    if($_POST['password']== $_POST['confpassword']){ /* vérifie si les mots de passes sont les memes */
-        if ($_POST['username']== $usernamebdd || $_POST['mail']== $mailbdd) {  /* vérifie si le nom d'utilisateur ou l'adresse mail ne sont pas déja utilisés */
-            echo "nom d'utilisateur ou adresse mail déja utilisés";
-        }
-        else {
-            $mdphash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $sql = "INSERT INTO users (username, mail, password) VALUES (?,?,?)";
-            $conn->prepare($sql)->execute([$_POST['username'], $_POST['mail'], $mdphash]);
-            header("location:login.php");  
-        }
-    }
-    else {
-        echo "mots de passes pas identiques";
-    }
-}
--->
