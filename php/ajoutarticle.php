@@ -39,7 +39,7 @@ session_start();
         <label class="form-check-label" for="nouv">Nouveauté ?</label>
       </div>
       <br>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
   </center>
 
@@ -48,19 +48,34 @@ session_start();
 
   <?php
   include "connection.php";
+
+
   
   if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
-    if ($_POST['nouv'] == "on"){
-      $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
-      $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 1]);
-      header("location:articles.php"); 
+ 
+    $stmt = $conn->prepare("SELECT reference FROM articles WHERE reference=:reference");
+    $stmt->execute(['reference' => $_POST["reference"]]); 
+    $user = $stmt->fetch();
+    if (empty($user)){
+        $reference = "";
+    }
+    else { $reference = $user[0]; }
+
+    if ($_POST['reference'] == $reference){
+      echo "Référence déjà exitante !";
     }
     else {
-      $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
-      $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 0]);
-      header("location:articles.php");  
+      if ($_POST['nouv'] == "on"){
+        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
+        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 1]);
+        header("location:articles.php"); 
+      }
+      else {
+        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
+        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 0]);
+        header("location:articles.php");  
+      }
     }
-  }
-
+}
   ?>
 </body>
