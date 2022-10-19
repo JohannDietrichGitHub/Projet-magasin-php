@@ -1,0 +1,14 @@
+#articles {
+    width: 80% !important;
+}
+.presentation {
+    margin-top: 2em;
+    margin-left: 10em;
+}
+.form-group {
+    width: 80%;
+}
+.table {
+    width: 80% !important;
+    border: solid 1px black;
+}
