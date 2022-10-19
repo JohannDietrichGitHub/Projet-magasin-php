@@ -9,6 +9,7 @@
     width: 80%;
 }
 .table {
-    width: 80% !important;
+    width: 60% !important;
     border: solid 1px black;
+    padding-top: 1em;
 }

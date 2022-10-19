@@ -18,7 +18,9 @@ session_start();
 
 <body>
   <center>
+    <br>
     <label>Ajouter un article</label>
+    <br><br>
     <form class="table" method="POST">
       <div class="form-group">
         <label for="nom">Nom</label>
@@ -32,7 +34,11 @@ session_start();
         <label for="prix">Prix</label>
         <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" required>
       </div>
-
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="nouv" id="nouv">
+        <label class="form-check-label" for="nouv">Nouveauté ?</label>
+      </div>
+      <br>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </center>
@@ -42,10 +48,18 @@ session_start();
 
   <?php
   include "connection.php";
+  
   if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
-   $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
-   $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 0]);
-   header("location:articles.php");  
+    if ($_POST['nouv'] == "on"){
+      $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
+      $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 1]);
+      header("location:articles.php"); 
+    }
+    else {
+      $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
+      $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 0]);
+      header("location:articles.php");  
+    }
   }
 
   ?>
