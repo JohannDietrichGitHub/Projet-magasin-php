@@ -1,7 +1,8 @@
 <?php
 // Initialize the session
 session_start();
-$_SESSION['message'] ="";
+unset($_SESSION['message']);
+
 
 ?>
 <head> 		
@@ -42,12 +43,16 @@ $_SESSION['message'] ="";
   <?php
   include "connection.php";
   if(isset($_POST['select'])){
+    $stmt = $conn->prepare("SELECT nom FROM articles WHERE id=?");
+    $stmt->execute([$_POST['select']]); 
+    $user = $stmt->fetch();
+    $_SESSION['message'] =$user[0] ." à bien été supprimé"; 
+
     $sql = 'DELETE FROM articles WHERE id=:id';
     $stmt = $conn->prepare($sql);
     $stmt->execute(['id' => $_POST['select'],]);
 
 
-    $_SESSION['message'] =$nom." à bien été supprimé";
 
     header("location:articles.php"); 
 
