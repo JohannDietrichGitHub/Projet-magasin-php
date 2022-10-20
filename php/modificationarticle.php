@@ -69,8 +69,7 @@ session_start();
     <br><br>
     <form class="table" method="POST">
     <div class="form-group">
-        <label for="id">id</label>
-        <input type="text" class="form-control" name="id" id="id"   value="<?php echo $idactuelle ?>" readonly="readonly" required> 
+        <input type="text" class="form-control" name="id" id="id"   value="<?php echo $idactuelle ?>" readonly="readonly" hidden required> 
       </div>
       <div class="form-group">
         <label for="nom">Nom</label>
@@ -93,7 +92,7 @@ session_start();
         <input type="text" class="form-control" name="promotion" id="promotion" placeholder="0" value="<?php echo $promo ?>" >
       </div>
       <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="nouv" id="nouv">
+        <input type="checkbox" class="form-check-input" name="nouv" id="nouv" <?php echo ($nouv==1 ? 'checked' : '') ?>>
         <label class="form-check-label" for="nouv">Nouveauté ?</label>
       </div>
       <br>
