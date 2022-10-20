@@ -1,6 +1,8 @@
 <?php
 // Initialize the session
 session_start();
+$_SESSION['message'] ="";
+
 ?>
 <head> 		
     <meta charset="utf-8" /> <!--encodage en utf8-->
@@ -78,12 +80,18 @@ session_start();
       if (isset($_POST['nouv'])){
         $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
         $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
+        $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
+
         header("location:articles.php");
+
       }
       else {
         $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
         $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 0]);
+        $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
+
         header("location:articles.php"); 
+
       }
     }
   }

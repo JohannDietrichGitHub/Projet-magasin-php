@@ -1,6 +1,7 @@
 <?php
 // Initialize the session
 session_start();
+$_SESSION['message'] ="";
 ?>
 <head> 		
     <meta charset="utf-8" /> <!--encodage en utf8-->
@@ -96,7 +97,7 @@ session_start();
         <label class="form-check-label" for="nouv">Nouveauté ?</label>
       </div>
       <br>
-      <button type="submit" class="btn btn-primary">Ajouter</button>
+      <button type="submit" class="btn btn-primary">Modifier</button>
     </form>
     <?php } 
     
@@ -110,6 +111,9 @@ session_start();
     $sql = "UPDATE articles SET nom=?, reference=?, prix_ht=?, taxe=?, promotion=?, nouveaute=? WHERE id=?";
     $stmt= $conn->prepare($sql);
     $stmt->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, $nouv, $_POST['id']]);
+
+    $_SESSION['message'] = $_POST['nom']." à bien été modifié !";
+
     header("location:articles.php"); 
 
   }

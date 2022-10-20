@@ -1,6 +1,8 @@
 <?php
 // Initialize the session
 session_start();
+$_SESSION['message'] ="";
+
 ?>
 <head> 		
     <meta charset="utf-8" /> <!--encodage en utf8-->
@@ -43,7 +45,13 @@ session_start();
     $sql = 'DELETE FROM articles WHERE id=:id';
     $stmt = $conn->prepare($sql);
     $stmt->execute(['id' => $_POST['select'],]);
-    header("location:articles.php");  
+
+
+    $_SESSION['message'] =$nom." à bien été supprimé";
+
+    header("location:articles.php"); 
+
+
   }
   ?>
 </body>

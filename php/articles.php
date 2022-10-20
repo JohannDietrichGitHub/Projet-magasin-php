@@ -16,6 +16,11 @@ session_start();
   ?>
 </header>
 <body>
+  <?php
+  if (isset($_SESSION['message'])){
+    echo $_SESSION['message'];
+  }
+  ?>
   <center>
     <br>
     <table class="table" id="articles">
