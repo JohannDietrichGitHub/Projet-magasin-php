@@ -71,7 +71,6 @@ session_start();
 
     $promo = intval($_POST['promotion']);
 
-
     if ($_POST['reference'] == $reference){
       echo "Référence déjà exitante !";
     }

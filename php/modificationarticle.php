@@ -39,8 +39,9 @@ session_start();
 
   if (isset($_POST['select'])) 
   {
+    $idactuelle = $_POST['select'];
     $stmt = $conn->prepare("SELECT * FROM articles WHERE id=:id");
-    $stmt->execute(['id' => $_POST['select']]); 
+    $stmt->execute(['id' => $idactuelle]); 
     $user = $stmt->fetch();
     
     $nom = $user['nom'];
@@ -53,6 +54,11 @@ session_start();
   else 
   {
     $nom = "";
+    $reference = "";
+    $prix = "";
+    $taxe = "";
+    $promo = "";
+    $nouv = "";
   }
 
   if ($nom != ""){
@@ -62,6 +68,10 @@ session_start();
     <label>Modifier l'article</label>
     <br><br>
     <form class="table" method="POST">
+    <div class="form-group">
+        <label for="id">id</label>
+        <input type="text" class="form-control" name="id" id="id"   value="<?php echo $idactuelle ?>" readonly="readonly" required> 
+      </div>
       <div class="form-group">
         <label for="nom">Nom</label>
         <input type="text" class="form-control" name="nom" id="nom"  placeholder="Entrez le nom de l'article" value="<?php echo $nom ?>" required> 
@@ -89,6 +99,21 @@ session_start();
       <br>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
-    <?php } ?>
+    <?php } 
+    
+  if(isset($_POST['nom'])){
+    $promo = intval($_POST['promotion']);
+    if(isset($_POST['nouv'])){
+      $nouv = 1;
+    }
+    else { $nouv = 0;}
+
+    $sql = "UPDATE articles SET nom=?, reference=?, prix_ht=?, taxe=?, promotion=?, nouveaute=? WHERE id=?";
+    $stmt= $conn->prepare($sql);
+    $stmt->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, $nouv, $_POST['id']]);
+    header("location:articles.php"); 
+
+  }
+    ?>
   </center>
 </body>
