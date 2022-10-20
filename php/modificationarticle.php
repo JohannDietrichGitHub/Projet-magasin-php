@@ -28,7 +28,7 @@ session_start();
        $data = $conn->query("SELECT * FROM articles")->fetchAll();
        foreach ($data as $row) 
        {
-         echo "<option> $row[nom] </option>";
+         echo "<option value=$row[id]> $row[nom] </option>";
        }
       ?>
     </select>
@@ -39,15 +39,26 @@ session_start();
 
   if (isset($_POST['select'])) 
   {
-    echo "Article choisi : ".$_POST['select'];
-    $nom = $row['nom']; /* Dernier article et pas article choisi */
-    $reference = $row['reference'];
-    $prix = $row['prix_ht'];
-    $nouv = $row['nouveaute'];
+    $stmt = $conn->prepare("SELECT * FROM articles WHERE id=:id");
+    $stmt->execute(['id' => $_POST['select']]); 
+    $user = $stmt->fetch();
+    
+    $nom = $user['nom'];
+    $reference = $user['reference'];
+    $prix = $user ['prix_ht'];
+    $taxe = $user['taxe'];
+    $promo = $user["promotion"];
+    $nouv = $user['nouveaute'];
   }
+  else 
+  {
+    $nom = "";
+  }
+
+  if ($nom != ""){
   ?>
 
-    <br><br><br><br><br>
+    <br><br>
     <label>Modifier l'article</label>
     <br><br>
     <form class="table" method="POST">
@@ -57,18 +68,27 @@ session_start();
       </div>
       <div class="form-group">
         <label for="reference">Reference</label>
-        <input type="text" class="form-control" name="reference" id="reference"  placeholder="Entrez la référence" required>
+        <input type="text" class="form-control" name="reference" id="reference"  placeholder="Entrez la référence" value="<?php echo $reference ?>" required>
       </div>
       <div class="form-group">
         <label for="prix">Prix</label>
-        <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" required>
+        <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" value="<?php echo $prix ?>" required>
+      </div>
+      <div class="form-group">
+        <label for="taxe">Taxe</label>
+        <input type="text" class="form-control" name="taxe" id="taxe" placeholder="Entrez la taxe (20 de base)" value="<?php echo $taxe ?>"  required>
+      </div>
+      <div class="form-group">
+        <label for="promotion">promotion</label>
+        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="0" value="<?php echo $promo ?>" required>
       </div>
       <div class="form-check">
         <input type="checkbox" class="form-check-input" name="nouv" id="nouv">
         <label class="form-check-label" for="nouv">Nouveauté ?</label>
       </div>
       <br>
-      <button type="submit" class="btn btn-primary">Modifier</button>
+      <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
+    <?php } ?>
   </center>
 </body>

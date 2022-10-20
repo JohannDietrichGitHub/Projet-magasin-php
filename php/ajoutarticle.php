@@ -34,6 +34,14 @@ session_start();
         <label for="prix">Prix</label>
         <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" required>
       </div>
+      <div class="form-group">
+        <label for="taxe">Taxe</label>
+        <input type="text" class="form-control" name="taxe" id="taxe" placeholder="Entrez la taxe (20 de base)" value=20 required>
+      </div>
+      <div class="form-group">
+        <label for="promotion">promotion</label>
+        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="Entrez la promotion (si il y en a une)" required>
+      </div>
       <div class="form-check">
         <input type="checkbox" class="form-check-input" name="nouv" id="nouv">
         <label class="form-check-label" for="nouv">Nouveauté ?</label>
@@ -66,16 +74,16 @@ session_start();
     }
     else {
       if ($_POST['nouv'] == "on"){
-        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
-        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 1]);
+        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
+        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $_POST['promotion'], 1]);
         header("location:articles.php"); 
       }
       else {
-        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, nouveaute) VALUES (?,?,?,?,?)";
-        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], 20, 0]);
-        header("location:articles.php");  
+        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
+        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $_POST['promotion'], 0]);
+        header("location:articles.php"); 
       }
     }
-}
+  }
   ?>
 </body>
