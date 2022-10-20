@@ -18,7 +18,7 @@ session_start();
 <body>
   <center>
   <br><br>
-    <label>Sélectionnez un article a modifier</label>
+    <label>Sélectionnez un article à modifier</label>
   <br>
   <form class="tablemod" method="POST">
     <select name="select" class="form-select" aria-label="Default select example">
@@ -80,7 +80,7 @@ session_start();
       </div>
       <div class="form-group">
         <label for="promotion">promotion</label>
-        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="0" value="<?php echo $promo ?>" required>
+        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="0" value="<?php echo $promo ?>" >
       </div>
       <div class="form-check">
         <input type="checkbox" class="form-check-input" name="nouv" id="nouv">

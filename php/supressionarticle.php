@@ -17,34 +17,32 @@ session_start();
 </header>
 <body>
 <center>
-    <br>
-    <label>Supprimer un article</label>
-    <br><br>
-    <form class="table" method="POST">
-      <div class="form-group">
-        <label for="nom">Nom</label>
-        <input type="text" class="form-control" name="nom" id="nom"  placeholder="Entrez le nom de l'article" required>
-      </div>
-      <div class="form-group">
-        <label for="reference">Reference</label>
-        <input type="text" class="form-control" name="reference" id="reference"  placeholder="Entrez la référence" required>
-      </div>
-
-      <br>
-      <button type="submit" class="btn btn-primary">Supprimer</button>
-    </form>
-  </center>
+  <br><br>
+    <label>Sélectionnez un article à supprimer</label>
+  <br>
+  <form class="tablemod" method="POST">
+    <select name="select" class="form-select" aria-label="Default select example">
+      <option selected>Articles </option>
+      <?php
+       require "connection.php";
+       $data = $conn->query("SELECT * FROM articles")->fetchAll();
+       foreach ($data as $row) 
+       {
+         echo "<option value=$row[id]> $row[nom] </option>";
+       }
+      ?>
+    </select>
+    <br><br><button type="submit" class="btn btn-primary">Supprimer</button>
+  </form>
+</center>
 
 
   <?php
   include "connection.php";
-  if(isset($_POST['nom'])){
-    $sql = 'DELETE FROM articles WHERE nom = :nom AND reference = :reference';
+  if(isset($_POST['select'])){
+    $sql = 'DELETE FROM articles WHERE id=:id';
     $stmt = $conn->prepare($sql);
-    $stmt->execute([
-      'nom' => $_POST['nom'],
-      'reference' => $_POST['reference']
-    ]);
+    $stmt->execute(['id' => $_POST['select'],]);
     header("location:articles.php");  
   }
   ?>

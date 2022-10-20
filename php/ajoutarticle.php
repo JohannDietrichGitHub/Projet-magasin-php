@@ -40,7 +40,7 @@ session_start();
       </div>
       <div class="form-group">
         <label for="promotion">promotion</label>
-        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="Entrez la promotion (si il y en a une)" required>
+        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="Entrez la promotion (si il y en a une)">
       </div>
       <div class="form-check">
         <input type="checkbox" class="form-check-input" name="nouv" id="nouv">
@@ -60,7 +60,7 @@ session_start();
 
   
   if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
- 
+    echo $_POST['promotion'];
     $stmt = $conn->prepare("SELECT reference FROM articles WHERE reference=:reference");
     $stmt->execute(['reference' => $_POST["reference"]]); 
     $user = $stmt->fetch();
@@ -69,18 +69,21 @@ session_start();
     }
     else { $reference = $user[0]; }
 
+    $promo = intval($_POST['promotion']);
+
+
     if ($_POST['reference'] == $reference){
       echo "Référence déjà exitante !";
     }
     else {
-      if ($_POST['nouv'] == "on"){
+      if (isset($_POST['nouv'])){
         $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
-        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $_POST['promotion'], 1]);
-        header("location:articles.php"); 
+        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
+        header("location:articles.php");
       }
       else {
         $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
-        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $_POST['promotion'], 0]);
+        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 0]);
         header("location:articles.php"); 
       }
     }
