@@ -29,7 +29,7 @@ unset($_SESSION['message']);
       <?php
        require "connection.php";
        $data = $conn->query("SELECT * FROM articles")->fetchAll();
-       foreach ($data as $row) 
+       foreach ($data as $row)  /* crée une ligne pour chaque article, avec le nom de l'article a chaque fois */
        {
          echo "<option value=$row[id]> $row[nom] </option>";
        }
@@ -42,8 +42,8 @@ unset($_SESSION['message']);
 
   <?php
   include "connection.php";
-  if(isset($_POST['select'])){
-    $stmt = $conn->prepare("SELECT nom FROM articles WHERE id=?");
+  if(isset($_POST['select'])){     /* Récupère l'ID du post sélectionné */
+    $stmt = $conn->prepare("SELECT nom FROM articles WHERE id=?"); /* selectionne la ligne avec l'id correspondant et la delete */
     $stmt->execute([$_POST['select']]); 
     $user = $stmt->fetch();
     $_SESSION['message'] =$user[0] ." à bien été supprimé"; 

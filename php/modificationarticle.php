@@ -66,7 +66,7 @@ unset($_SESSION['message']);
   ?>
 
     <br><br>
-    <label>Modifier l'article</label>
+    <label>Modifier l'article</label>  
     <br><br>
     <form class="table" method="POST">
     <div class="form-group">

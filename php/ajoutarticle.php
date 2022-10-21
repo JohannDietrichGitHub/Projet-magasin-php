@@ -21,8 +21,8 @@ unset($_SESSION['message']);
 <body>
   <center>
     <br>
-    <label>Ajouter un article</label>
-    <br><br>
+    <label>Ajouter un article</label> <!-- formulaire pour ajouter un article -->
+    <br><br> 
     <form class="table" method="POST">
       <div class="form-group">
         <label for="nom">Nom</label>
@@ -60,10 +60,11 @@ unset($_SESSION['message']);
   include "connection.php";
 
 
-  
+
   if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
-    echo $_POST['promotion'];
-    $stmt = $conn->prepare("SELECT reference FROM articles WHERE reference=:reference");
+    $num_length = strlen((string)$_POST['reference']); /* met en string la valeur de la référence pour compter les charactères */
+
+    $stmt = $conn->prepare("SELECT reference FROM articles WHERE reference=:reference");/* cherche dans la BDD si la référence existe déjà */
     $stmt->execute(['reference' => $_POST["reference"]]); 
     $user = $stmt->fetch();
     if (empty($user)){
@@ -83,16 +84,32 @@ unset($_SESSION['message']);
     if ($_POST['reference'] == $reference){
       echo "Référence déjà exitante !";
     }
-    else {
-        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
-        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
-        $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
+    else if($num_length == 8 || is_int($_POST['reference']) || $_POST['reference'] > 0 ) { /* vérifie la taille de la reference, s'il elle est une nombre et si celle-ci n'est pas négative*/
+      if ($_POST['prix'] > 0 || is_int($_POST['prix'])){ /* vérifie si le prix est un nombre et n'est pas négatif */
+        if (is_int($_POST['taxe'])){
+          if (is_int($_POST['promotion'])){
+            $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
+            $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
+            $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
 
-        header("location:articles.php");
+            header("location:articles.php");
+          }
+          else {
+            echo "la promotion n'est pas un nombre";
+          }
+        }
+        else {
+          echo "la taxe n'est pas un nombre";
+        }
+      }
+      else {
+        echo "le prix n'est pas un nombre, ou est négatif";
       }
 
-
-    }
-  
+    } 
+    else {
+    echo "la référence ne fait pas 8 charactères, n'est pas uniquement des chiffres ou est négatif";
+    }   
+  }
   ?>
 </body>

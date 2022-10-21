@@ -27,7 +27,7 @@ session_start();
     <table class="table" id="articles">
       <thead>
         <tr>
-          <th scope="col">Nom</th>
+          <th scope="col">Nom</th> <!-- défini la forme du tableau -->
           <th scope="col">Référence</th>
           <th scope="col">Prix</th>
         </tr>
@@ -35,12 +35,12 @@ session_start();
       <tbody>
         <?php
         require "connection.php";
-        $data = $conn->query("SELECT * FROM articles")->fetchAll();
+        $data = $conn->query("SELECT * FROM articles")->fetchAll();  /* insère dans une nouvelle colonne pour chaque colonne dans la bdd d'articles */
         foreach ($data as $row) {
           echo "<tr>";
           echo "<th> $row[nom]</th>";
           echo "<th> $row[reference]</th>";
-          echo "<th> $row[prix_ht]</th>";
+          echo "<th> $row[prix_ht] € </th>";
           echo "</tr>";
         }
         ?>
