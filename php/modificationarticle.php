@@ -37,9 +37,9 @@ unset($_SESSION['message']);
   </form>
   <?php 
 
-
+/* Récuperer données de l'article selectionné pour l'intégrer dans le formulaire */
   if (isset($_POST['select'])) 
-  {
+  { 
     $idactuelle = $_POST['select'];
     $stmt = $conn->prepare("SELECT * FROM articles WHERE id=:id");
     $stmt->execute(['id' => $idactuelle]); 
@@ -90,7 +90,7 @@ unset($_SESSION['message']);
       </div>
       <div class="form-group">
         <label for="promotion">promotion</label>
-        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="0" value="<?php echo $promo ?>" >
+        <input type="text" class="form-control" name="promotion" id="promotion" placeholder="Entrez la valeur de la promotion en %" value="<?php echo $promo ?>" >
       </div>
       <div class="form-check">
         <input type="checkbox" class="form-check-input" name="nouv" id="nouv" <?php echo ($nouv==1 ? 'checked' : '') ?>>
@@ -101,12 +101,18 @@ unset($_SESSION['message']);
     </form>
     <?php } 
     
+    // Modification de l'article dans la base de donnée
   if(isset($_POST['nom'])){
-    $promo = intval($_POST['promotion']);
+
+    if($_POST['promotion'] == "") $promo = null;
+    else $promo = $_POST['promotion'];
+
     if(isset($_POST['nouv'])){
-      $nouv = 1;
+        $nouv = 1;
     }
-    else { $nouv = 0;}
+    else { 
+        $nouv = 0;
+    }
 
     $sql = "UPDATE articles SET nom=?, reference=?, prix_ht=?, taxe=?, promotion=?, nouveaute=? WHERE id=?";
     $stmt= $conn->prepare($sql);

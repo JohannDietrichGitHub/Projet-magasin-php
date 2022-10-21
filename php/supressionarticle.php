@@ -53,9 +53,7 @@ unset($_SESSION['message']);
     $stmt->execute(['id' => $_POST['select'],]);
 
 
-
     header("location:articles.php"); 
-
 
   }
   ?>

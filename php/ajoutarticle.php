@@ -73,27 +73,26 @@ unset($_SESSION['message']);
 
     $promo = intval($_POST['promotion']);
 
+    if(isset($_POST['nouv'])){
+      $nouv = 1;
+    }
+    else { 
+      $nouv = 0;
+    }
+
     if ($_POST['reference'] == $reference){
       echo "Référence déjà exitante !";
     }
     else {
-      if (isset($_POST['nouv'])){
         $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
         $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
         $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
 
         header("location:articles.php");
-
       }
-      else {
-        $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
-        $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 0]);
-        $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
 
-        header("location:articles.php"); 
 
-      }
     }
-  }
+  
   ?>
 </body>
