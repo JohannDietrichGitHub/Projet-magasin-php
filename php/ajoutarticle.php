@@ -1,7 +1,6 @@
 <?php
 // Initialize the session
 session_start();
-unset($_SESSION['message']);
 
 ?>
 <head> 		
@@ -19,6 +18,12 @@ unset($_SESSION['message']);
 </header>
 
 <body>
+  <?php
+    if (isset($_SESSION['alert'])){
+      echo "<div class='alert alert-danger' role='alert'>$_SESSION[alert]</div>";
+    }
+    unset($_SESSION['alert']);
+  ?>
   <center>
     <br>
     <label>Ajouter un article</label> <!-- formulaire pour ajouter un article -->
@@ -62,7 +67,15 @@ unset($_SESSION['message']);
 
 
   if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
-    $num_length = strlen((string)$_POST['reference']); /* met en string la valeur de la référence pour compter les charactères */
+
+    //Défini toutes les variables permettant de vérifier si le formulaire rend des nombres
+    $referencenbr = intval($_POST['reference']);
+
+    $prix = intval($_POST['prix']);
+
+    $taxe = intval($_POST['taxe']);
+
+    $promo=null;       
 
     $stmt = $conn->prepare("SELECT reference FROM articles WHERE reference=:reference");/* cherche dans la BDD si la référence existe déjà */
     $stmt->execute(['reference' => $_POST["reference"]]); 
@@ -72,7 +85,14 @@ unset($_SESSION['message']);
     }
     else { $reference = $user[0]; }
 
-    $promo = intval($_POST['promotion']);
+    if (isset($_POST['promotion'])){
+      if (is_numeric($_POST['promotion']) OR empty($_POST['promotion'])){
+        $promo = intval($_POST['promotion']); //converti automatiquement le string vide en 0
+      }
+      else {
+        $promo="pasunnombre";
+      }
+    }
 
     if(isset($_POST['nouv'])){
       $nouv = 1;
@@ -82,33 +102,36 @@ unset($_SESSION['message']);
     }
 
     if ($_POST['reference'] == $reference){
-      echo "Référence déjà exitante !";
+      $_SESSION['alert'] = "Référence déjà existante ";
     }
-    else if($num_length == 8 || is_int($_POST['reference']) || $_POST['reference'] > 0 ) { /* vérifie la taille de la reference, s'il elle est une nombre et si celle-ci n'est pas négative*/
-      if ($_POST['prix'] > 0 || is_int($_POST['prix'])){ /* vérifie si le prix est un nombre et n'est pas négatif */
-        if (is_int($_POST['taxe'])){
-          if (is_int($_POST['promotion'])){
-            $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)";
+    else if(strlen($_POST['reference']) == 8 AND is_numeric($_POST['reference']) AND $referencenbr >= 0 ) { /* vérifie la taille de la reference, s'il elle est une nombre et si celle-ci n'est pas négative*/
+      if (is_numeric($_POST['prix']) AND $prix > 0  ){ /* vérifie si le prix est un nombre et n'est pas négatif */
+        if ($taxe >= 0 AND is_numeric($_POST['taxe'])){ 
+          if ($promo >= 0 AND is_numeric($promo)){
+            $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)"; //Insertion des donnés
             $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
-            $_SESSION['message'] =$_POST['nom']." à bien été ajouté";
+            $_SESSION['message'] =$_POST['nom']." à bien été ajouté"; //ajout du message de confirmation
 
             header("location:articles.php");
           }
           else {
-            echo "la promotion n'est pas un nombre";
+            $_SESSION['alert'] = "la promotion ne peut être qu'un nombre positif";
+            header("location:ajoutarticle.php");
           }
         }
         else {
-          echo "la taxe n'est pas un nombre";
+          $_SESSION['alert'] = "la taxe ne peut être qu'un nombre positif";
+          header("location:ajoutarticle.php");
         }
       }
       else {
-        echo "le prix n'est pas un nombre, ou est négatif";
+        $_SESSION['alert'] =  "le prix ne peut être qu'un nombre positif";
+        header("location:ajoutarticle.php");
       }
-
     } 
     else {
-    echo "la référence ne fait pas 8 charactères, n'est pas uniquement des chiffres ou est négatif";
+      $_SESSION['alert'] =  "la référence ne fait pas 8 charactères, n'est pas uniquement des chiffres ou est négatif";
+      header("location:ajoutarticle.php");
     }   
   }
   ?>

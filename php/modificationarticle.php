@@ -1,7 +1,6 @@
 <?php
 // Initialize the session
 session_start();
-unset($_SESSION['message']);
 ?>
 <head> 		
     <meta charset="utf-8" /> <!--encodage en utf8-->
