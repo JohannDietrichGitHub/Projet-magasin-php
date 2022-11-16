@@ -26,9 +26,9 @@ session_start();
   ?>
   <center>
     <br>
-    <label>Ajouter un article</label> <!-- formulaire pour ajouter un article -->
+    <label>Ajouter un article</label> <!-- formulaire pour ajouter un article --> 
     <br><br> 
-    <form class="table" method="POST">
+    <form action='insertion_article.php' class="table" method="POST">
       <div class="form-group">
         <label for="nom">Nom</label>
         <input type="text" class="form-control" name="nom" id="nom"  placeholder="Entrez le nom de l'article" required>
@@ -58,81 +58,4 @@ session_start();
     </form>
   </center>
 
-
-
-
-  <?php
-  include "connection.php";
-
-
-
-  if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
-
-    //Défini toutes les variables permettant de vérifier si le formulaire rend des nombres
-    $referencenbr = intval($_POST['reference']);
-
-    $prix = intval($_POST['prix']);
-
-    $taxe = intval($_POST['taxe']);
-
-    $promo=null;       
-
-    $stmt = $conn->prepare("SELECT reference FROM articles WHERE reference=:reference");/* cherche dans la BDD si la référence existe déjà */
-    $stmt->execute(['reference' => $_POST["reference"]]); 
-    $user = $stmt->fetch();
-    if (empty($user)){
-        $reference = "";
-    }
-    else { $reference = $user[0]; }
-
-    if (isset($_POST['promotion'])){
-      if (is_numeric($_POST['promotion']) OR empty($_POST['promotion'])){
-        $promo = intval($_POST['promotion']); //converti automatiquement le string vide en 0
-      }
-      else {
-        $promo="pasunnombre";
-      }
-    }
-
-    if(isset($_POST['nouv'])){
-      $nouv = 1;
-    }
-    else { 
-      $nouv = 0;
-    }
-
-    if ($_POST['reference'] == $reference){
-      $_SESSION['alert'] = "Référence déjà existante ";
-    }
-    else if(strlen($_POST['reference']) == 8 AND is_numeric($_POST['reference']) AND $referencenbr >= 0 ) { /* vérifie la taille de la reference, s'il elle est une nombre et si celle-ci n'est pas négative*/
-      if (is_numeric($_POST['prix']) AND $prix > 0  ){ /* vérifie si le prix est un nombre et n'est pas négatif */
-        if ($taxe >= 0 AND is_numeric($_POST['taxe'])){ 
-          if ($promo >= 0 AND is_numeric($promo)){
-            $sql = "INSERT INTO articles (nom, reference, prix_ht, taxe, promotion, nouveaute) VALUES (?,?,?,?,?,?)"; //Insertion des donnés
-            $conn->prepare($sql)->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, 1]);
-            $_SESSION['message'] =$_POST['nom']." à bien été ajouté"; //ajout du message de confirmation
-
-            header("location:articles.php");
-          }
-          else {
-            $_SESSION['alert'] = "la promotion ne peut être qu'un nombre positif";
-            header("location:ajoutarticle.php");
-          }
-        }
-        else {
-          $_SESSION['alert'] = "la taxe ne peut être qu'un nombre positif";
-          header("location:ajoutarticle.php");
-        }
-      }
-      else {
-        $_SESSION['alert'] =  "le prix ne peut être qu'un nombre positif";
-        header("location:ajoutarticle.php");
-      }
-    } 
-    else {
-      $_SESSION['alert'] =  "la référence ne fait pas 8 charactères, n'est pas uniquement des chiffres ou est négatif";
-      header("location:ajoutarticle.php");
-    }   
-  }
-  ?>
 </body>

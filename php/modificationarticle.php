@@ -30,7 +30,8 @@ session_start();
     <select name="select" class="form-select" aria-label="Default select example">
       <option selected>Articles </option>
       <?php
-       require "connection.php";
+       require_once "connection.php";
+       require_once "fonctions.php";
        $data = $conn->query("SELECT * FROM articles")->fetchAll();
        foreach ($data as $row) 
        {
@@ -73,7 +74,7 @@ session_start();
     <br><br>
     <label>Modifier l'article</label>  
     <br><br>
-    <form class="table" method="POST">
+    <form action='insermodif_article.php' class="table" method="POST">
     <div class="form-group">
         <input type="text" class="form-control" name="id" id="id"   value="<?php echo $idactuelle ?>" readonly="readonly" hidden required> 
       </div>
@@ -104,68 +105,7 @@ session_start();
       <br>
       <button type="submit" class="btn btn-primary">Modifier</button>
     </form>
-    <?php } 
-    
-    // Modification de l'article dans la base de donnée
-  if(isset($_POST['nom'])){
- //Défini toutes les variables permettant de vérifier si le formulaire rend des nombres
- $referencenbr = intval($_POST['reference']);
+    <?php } ?>
 
- $prix = intval($_POST['prix']);
-
- $taxe = intval($_POST['taxe']);
-
- $promo=null;       
-
- if (isset($_POST['promotion'])){
-   if (is_numeric($_POST['promotion']) OR empty($_POST['promotion'])){
-     $promo = intval($_POST['promotion']); //converti automatiquement le string vide en 0
-   }
-   else {
-     $promo="pasunnombre";
-   }
- }
-
- if(isset($_POST['nouv'])){
-   $nouv = 1;
- }
- else { 
-   $nouv = 0;
- }
-
-
- if(strlen($_POST['reference']) == 8 AND is_numeric($_POST['reference']) AND $referencenbr >= 0 ) { /* vérifie la taille de la reference, s'il elle est une nombre et si celle-ci n'est pas négative*/
-   if (is_numeric($_POST['prix']) AND $prix > 0  ){ /* vérifie si le prix est un nombre et n'est pas négatif */
-     if ($taxe >= 0 AND is_numeric($_POST['taxe'])){ 
-       if ($promo >= 0 AND is_numeric($promo)){
-          $sql = "UPDATE articles SET nom=?, reference=?, prix_ht=?, taxe=?, promotion=?, nouveaute=? WHERE id=?";
-          $stmt= $conn->prepare($sql);
-          $stmt->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, $nouv, $_POST['id']]);
-
-          $_SESSION['message'] = $_POST['nom']." à bien été modifié !";
-
-          header("location:articles.php"); 
-          }
-            else {
-              $_SESSION['alert'] = "la promotion ne peut être qu'un nombre positif";
-              header("location:modificationarticle.php");
-            }
-          }
-        else {
-        $_SESSION['alert'] = "la taxe ne peut être qu'un nombre positif";
-        header("location:modificationarticle.php");
-        }
-      }
-    else {
-    $_SESSION['alert'] =  "le prix ne peut être qu'un nombre positif";
-    header("location:modificationarticle.php");
-    }
-  } 
-  else {
-  $_SESSION['alert'] =  "la référence ne fait pas 8 charactères, n'est pas uniquement des chiffres ou est négatif";
-  header("location:modificationarticle.php");
-  }   
-}
-    ?>
   </center>
 </body>
