@@ -1,5 +1,6 @@
 SET NAMES utf8;
 
+DROP TABLE IF EXISTS panier;
 DROP TABLE IF EXISTS clients;
 DROP TABLE IF EXISTS villes;
 DROP TABLE IF EXISTS articles;
@@ -184,3 +185,15 @@ INSERT INTO clients values(57,'Sibyla','PARÉ','sisi.pare@gmail.com','1969-09-14
 INSERT INTO clients values(58,'Cheney','CARTIER','cheney.cartier@caramail.com','1982-11-5','23 rue de la République',43,14);
 INSERT INTO clients values(59,'Elita','COTE','elitounette@hotmail.com','1996-10-11','2 rue Descartes',16,NULL);
 INSERT INTO clients values(60,'Aurore','BOURDETTE','aurore.labourde@wanadoo.fr','1978-09-09','17 Rue St Ferréol',4,NULL);
+
+
+-- Création de la table panier
+CREATE TABLE panier(
+    id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    client_id int UNSIGNED NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES clients(id),
+    article_id int UNSIGNED NOT NULL,
+    FOREIGN KEY (article_id) REFERENCES articles(id),
+    quantite int UNSIGNED NOT NULL,
+    Primary Key(id)
+) CHARACTER SET utf8;
