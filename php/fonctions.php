@@ -102,3 +102,21 @@ function all_verif($conn, $isUpdate=false)
     return $resultat;
   }
 
+  function insert_panier($conn){
+    //envoi des données des articles au panier
+
+    if(isset($_POST['valpanier']) AND isset($_SESSION['id'])){
+      $id_article = $_POST['valpanier'];
+      $id_client = $_SESSION['id'];
+      $data_panier = [
+        'client_id' => $id_client,
+        'article_id' => $id_article,
+        'quantite' => 1
+      ];
+      //et les mets dans les variables pour les retransmettre a la table panier 
+      $sql = "INSERT INTO panier (client_id, article_id, quantite) VALUES (:client_id, :article_id, :quantite)"; //Insertion des donnés
+      $conn->prepare($sql)->execute($data_panier);
+      header("location:panier.php");
+      exit;
+    }
+  }

@@ -14,6 +14,8 @@ session_start();
 
 <header>
   <?php
+    require_once ('connection.php');
+    require_once('fonctions.php');
     require_once ('navbar.php');
   ?>
 </header>

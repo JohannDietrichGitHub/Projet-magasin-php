@@ -14,8 +14,6 @@
     <select name="select" class="form-select" aria-label="Default select example">
       <option selected>Articles </option>
       <?php
-       require_once "connection.php";
-       require_once "fonctions.php";
        $data = $conn->query("SELECT * FROM articles")->fetchAll();
        foreach ($data as $row) 
        {

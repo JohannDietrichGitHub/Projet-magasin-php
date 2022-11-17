@@ -39,6 +39,17 @@ CREATE TABLE articles(
     Primary Key(id)
 ) CHARACTER SET utf8;
 
+-- Création de la table panier
+CREATE TABLE panier(
+    id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    client_id int UNSIGNED NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES clients(id),
+    article_id int UNSIGNED NOT NULL,
+    FOREIGN KEY (article_id) REFERENCES articles(id),
+    quantite int UNSIGNED NOT NULL,
+    Primary Key(id)
+) CHARACTER SET utf8;
+
 -- Insertion des données articles
 INSERT INTO articles values(1, 'marteau de menuisier bois verni',81968453,8.90,20,NULL, 0);
 INSERT INTO articles values(2, 'marteau massette fibre de verre',80166978,21.90,20,NULL, 0);
@@ -185,15 +196,3 @@ INSERT INTO clients values(57,'Sibyla','PARÉ','sisi.pare@gmail.com','1969-09-14
 INSERT INTO clients values(58,'Cheney','CARTIER','cheney.cartier@caramail.com','1982-11-5','23 rue de la République',43,14);
 INSERT INTO clients values(59,'Elita','COTE','elitounette@hotmail.com','1996-10-11','2 rue Descartes',16,NULL);
 INSERT INTO clients values(60,'Aurore','BOURDETTE','aurore.labourde@wanadoo.fr','1978-09-09','17 Rue St Ferréol',4,NULL);
-
-
--- Création de la table panier
-CREATE TABLE panier(
-    id int UNSIGNED NOT NULL AUTO_INCREMENT,
-    client_id int UNSIGNED NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES clients(id),
-    article_id int UNSIGNED NOT NULL,
-    FOREIGN KEY (article_id) REFERENCES articles(id),
-    quantite int UNSIGNED NOT NULL,
-    Primary Key(id)
-) CHARACTER SET utf8;
