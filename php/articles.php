@@ -23,14 +23,14 @@
 	  <tbody>
 		<?php
 		$data = $conn->query("SELECT * FROM articles")->fetchAll();  /* insère dans une nouvelle colonne pour chaque colonne dans la bdd d'articles */
-		foreach ($data as $row) {
+		foreach ($data as $article) {
 		  echo "<tr>";
-		  echo "<th> $row[nom]</th>";
-		  echo "<th> $row[reference]</th>";
-		  echo "<th> $row[prix_ht] € </th>";
+		  echo "<th> $article[nom]</th>";
+		  echo "<th> $article[reference]</th>";
+		  echo "<th> $article[prix_ht] € </th>";
 		  /* if (isset($_SESSION['nom'])){ */
 			echo "<th><form action='insertion_panier.php' class='panier' method='post'>
-			<button name='valpanier' value='$row[id]'>Ajouter</button></form></th>";
+			<button name='valpanier' value='$article[id]'>Ajouter</button></form></th>";
 		  /* } */
 		  echo "</tr>";
 		}

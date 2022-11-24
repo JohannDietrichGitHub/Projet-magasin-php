@@ -102,7 +102,7 @@ function all_verif($conn, $isUpdate=false)
     return $resultat;
   }
 
-  function insert_panier($conn){
+function insert_panier($conn){
     //envoi des données des articles au panier
 
     if(isset($_POST['valpanier']) AND isset($_SESSION['id'])){
@@ -119,4 +119,58 @@ function all_verif($conn, $isUpdate=false)
       header("location:panier.php");
       exit;
     }
+  }
+
+function suppr_panier($conn){
+
+    $id_article = $_POST['id_article'];
+
+    $sql = "DELETE FROM panier WHERE id=?";
+    $stmt= $conn->prepare($sql);
+    $stmt->execute([$id_article]);
+    header("location:panier.php");
+    exit;
+  }
+
+function enlev_quant_panier($conn){
+    $id_article = $_POST['id_article'];
+    $stmt = $conn->prepare("SELECT quantite FROM panier WHERE id=?");
+    $stmt->execute([$id_article]); 
+    $quantite = $stmt->fetch();
+
+    $quantite['quantite'] -= 1;
+
+    $data = [
+        'quantite' => $quantite['quantite'],
+        'id' => $id_article
+    ];
+    
+    $sql = "UPDATE panier SET quantite=:quantite WHERE id=:id";
+    $stmt= $conn->prepare($sql);
+    $stmt->execute($data);
+    header("location:panier.php");
+    exit;
+
+    header("location:panier.php");
+    exit;
+  }
+
+function ajout_quant_panier($conn){
+    $id_article = $_POST['id_article'];
+    $stmt = $conn->prepare("SELECT quantite FROM panier WHERE id=?");
+    $stmt->execute([$id_article]); 
+    $quantite = $stmt->fetch();
+
+    $quantite['quantite'] += 1;
+
+    $data = [
+        'quantite' => $quantite['quantite'],
+        'id' => $id_article
+    ];
+
+    $sql = "UPDATE panier SET quantite=:quantite WHERE id=:id";
+    $stmt= $conn->prepare($sql);
+    $stmt->execute($data);
+    header("location:panier.php");
+    exit;
   }
