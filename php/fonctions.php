@@ -125,7 +125,7 @@ function suppr_panier($conn){
 
     $id_article = $_POST['id_article'];
 
-    $sql = "DELETE FROM panier WHERE id=?";
+    $sql = "DELETE FROM panier WHERE article_id=?";
     $stmt= $conn->prepare($sql);
     $stmt->execute([$id_article]);
     header("location:panier.php");
@@ -134,30 +134,32 @@ function suppr_panier($conn){
 
 function enlev_quant_panier($conn){
     $id_article = $_POST['id_article'];
-    $stmt = $conn->prepare("SELECT quantite FROM panier WHERE id=?");
+    $stmt = $conn->prepare("SELECT quantite FROM panier WHERE article_id=?");
     $stmt->execute([$id_article]); 
     $quantite = $stmt->fetch();
 
     $quantite['quantite'] -= 1;
+    if ($quantite['quantite']<=0){
+        header("location:panier.php");
+        exit;
+    }
+    else {
+        $data = [
+            'quantite' => $quantite['quantite'],
+            'id' => $id_article
+        ];
+        $sql = "UPDATE panier SET quantite=:quantite WHERE article_id=:id";
+        $stmt= $conn->prepare($sql);
+        $stmt->execute($data);
+        header("location:panier.php");
+        exit;
+    }
 
-    $data = [
-        'quantite' => $quantite['quantite'],
-        'id' => $id_article
-    ];
-    
-    $sql = "UPDATE panier SET quantite=:quantite WHERE id=:id";
-    $stmt= $conn->prepare($sql);
-    $stmt->execute($data);
-    header("location:panier.php");
-    exit;
-
-    header("location:panier.php");
-    exit;
   }
 
 function ajout_quant_panier($conn){
     $id_article = $_POST['id_article'];
-    $stmt = $conn->prepare("SELECT quantite FROM panier WHERE id=?");
+    $stmt = $conn->prepare("SELECT quantite FROM panier WHERE article_id=?");
     $stmt->execute([$id_article]); 
     $quantite = $stmt->fetch();
 
@@ -168,7 +170,7 @@ function ajout_quant_panier($conn){
         'id' => $id_article
     ];
 
-    $sql = "UPDATE panier SET quantite=:quantite WHERE id=:id";
+    $sql = "UPDATE panier SET quantite=:quantite WHERE article_id=:id";
     $stmt= $conn->prepare($sql);
     $stmt->execute($data);
     header("location:panier.php");
