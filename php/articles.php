@@ -15,9 +15,9 @@
 		  <th scope="col">Nom</th> <!-- défini la forme du tableau -->
 		  <th scope="col">Référence</th>
 		  <th scope="col">Prix</th>
-	<?php /* if (isset($_SESSION['nom'])){ */
+	<?php if (isset($_SESSION['id'])){ 
 			echo "<th scope='col'>Ajouter au panier</th>";
-		  /* } */?>
+		   } ?>
 		</tr>
 	  </thead>
 	  <tbody>
@@ -28,11 +28,11 @@
 		  echo "<th> $article[nom]</th>";
 		  echo "<th> $article[reference]</th>";
 		  echo "<th> $article[prix_ht] € </th>";
-		  /* if (isset($_SESSION['nom'])){ */
+		  if (isset($_SESSION['id'])){
 			echo "<th><form action='insertion_panier.php' class='panier' method='post'>
 			<button name='valpanier' value='$article[id]'>Ajouter</button></form></th>";
-		  /* } */
-		  echo "</tr>";
+		  }
+		  echo "</tr>";	
 		}
 		?>
 	  </tbody>

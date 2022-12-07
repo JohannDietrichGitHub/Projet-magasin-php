@@ -13,3 +13,9 @@
     border: solid 1px black;
     padding-top: 1em;
 }
+.modifier_article_css{
+    display: flex;
+}
+.panier{
+    padding-right: 5px;
+}

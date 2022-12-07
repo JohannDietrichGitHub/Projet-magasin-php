@@ -116,6 +116,7 @@ function insert_panier($conn){
       //et les mets dans les variables pour les retransmettre a la table panier 
       $sql = "INSERT INTO panier (client_id, article_id, quantite) VALUES (:client_id, :article_id, :quantite)"; //Insertion des donnés
       $conn->prepare($sql)->execute($data_panier);
+      $_SESSION['info_panier'] = "L'article à bien été inséré dans le panier";
       header("location:panier.php");
       exit;
     }
@@ -128,6 +129,7 @@ function suppr_panier($conn){
     $sql = "DELETE FROM panier WHERE article_id=?";
     $stmt= $conn->prepare($sql);
     $stmt->execute([$id_article]);
+    $_SESSION['alert'] = "L'article à été supprimé du panier";
     header("location:panier.php");
     exit;
   }
@@ -137,9 +139,10 @@ function enlev_quant_panier($conn){
     $stmt = $conn->prepare("SELECT quantite FROM panier WHERE article_id=?");
     $stmt->execute([$id_article]); 
     $quantite = $stmt->fetch();
-
+    $quantite_avant = $quantite['quantite'];
     $quantite['quantite'] -= 1;
     if ($quantite['quantite']<=0){
+      $_SESSION['alert'] = "La quantité de l'objet ne peut pas être inférieure à 1";
         header("location:panier.php");
         exit;
     }
@@ -151,6 +154,7 @@ function enlev_quant_panier($conn){
         $sql = "UPDATE panier SET quantite=:quantite WHERE article_id=:id";
         $stmt= $conn->prepare($sql);
         $stmt->execute($data);
+        $_SESSION['alert'] = "La quantité de l'article à baissé de ".$quantite_avant ." à " .$quantite['quantite'];
         header("location:panier.php");
         exit;
     }
@@ -162,7 +166,7 @@ function ajout_quant_panier($conn){
     $stmt = $conn->prepare("SELECT quantite FROM panier WHERE article_id=?");
     $stmt->execute([$id_article]); 
     $quantite = $stmt->fetch();
-
+    $quantite_avant = $quantite['quantite'];
     $quantite['quantite'] += 1;
 
     $data = [
@@ -173,6 +177,7 @@ function ajout_quant_panier($conn){
     $sql = "UPDATE panier SET quantite=:quantite WHERE article_id=:id";
     $stmt= $conn->prepare($sql);
     $stmt->execute($data);
+    $_SESSION['info_panier'] = "La quantité de l'article à été augmenté, de ". $quantite_avant . " a " .$quantite['quantite'];
     header("location:panier.php");
     exit;
   }
