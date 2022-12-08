@@ -199,3 +199,41 @@ function ajout_quant_panier($conn){
     header("location:panier.php");
     exit;
   }
+
+  function connection_uti($conn){
+    if(!empty($_POST))  
+    {
+        $stmt = $conn->prepare("SELECT mot_de_passe FROM clients WHERE email=?");
+        $stmt->execute([$_POST["username"]]); 
+        $passwd = $stmt->fetch();
+
+        if ($passwd !=null){
+            if (/* password_verify( */$_POST["password"]== $passwd['mot_de_passe']){    
+                $stmt = $conn->prepare("SELECT * FROM clients WHERE email = :username"); /* permet de chercher la colone"droits" determinant si un utilisateur est administrateur ou non */
+                $stmt->execute(['username' => $_POST["username"]]); 
+                     $user = $stmt->fetch();
+                     $droits = $user['administrateur']; //vérifiie dans la BDD si l'utilisateur a des droits administrateurs
+                     $_SESSION['id'] = $user['id'];
+                     $_SESSION["username"] = $_POST["username"]; /* Crée les variables de sessions permettant donc de confirmer la connection et plus */
+                     $_SESSION["droits"] = $droits;
+                     //creation de logs
+                     header("location:articles.php");  
+                     exit;
+                }  
+                else  
+                {  
+                     echo "Mauvais mot de passe ou nom d'utilisateur";
+                }
+            }
+            else 
+                {
+                    echo "Nom d'utilisateur inconnu";
+                }
+        } 
+}
+
+function logout(){
+    session_destroy();//déconnecte l'utilisateur
+    header("location: login.php");
+    exit;
+}

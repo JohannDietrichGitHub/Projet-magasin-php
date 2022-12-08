@@ -1,5 +1,6 @@
 <?php require_once('header.php'); ?>
 <body>
+    <?php if (isset($_SESSION['id'])){?>
   <div class="forme_panier">
     <table class="table" id="articles">
         <thead>
@@ -63,5 +64,9 @@
                     echo "<div class='alert alert-success' role='alert'>$_SESSION[info_panier]</div>";
                 }
                 unset($_SESSION['info_panier']);
+            }
+            else {
+                echo "<h1> Veuillez vous connecter pour accéder au panier</h1>";
+            }
   ?>
 </body>

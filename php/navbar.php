@@ -6,11 +6,17 @@
         <div class="navbar-nav">
         <a class="nav-item nav-link active" href="http://localhost:3000/php/accueil.php"">Accueil</a>
         <a class="nav-item nav-link active" href="http://localhost:3000/php/articles.php"">Articles</a>
+        <?php if (isset($_SESSION["droits"]) AND  $_SESSION["droits"]==1){?>
         <a class="nav-item nav-link active" href="http://localhost:3000/php/ajoutarticle.php"">Ajouter un article</a>
         <a class="nav-item nav-link active" href="http://localhost:3000/php/supressionarticle.php""> Supprimer un article</a>
         <a class="nav-item nav-link active" href="http://localhost:3000/php/modificationarticle.php"">Modifier un article</a>
+        <?php ;} ?>
         <a class="nav-item nav-link active" href="http://localhost:3000/php/panier.php"">Panier</a>
-
+        <?php if (!isset($_SESSION['id'])){?>
+        <a class="nav-item nav-link active" href="http://localhost:3000/php/login.php"">Se connecter</a>
+        <?php ;} else { ?>
+        <a class="nav-item nav-link active" href="http://localhost:3000/php/logout.php"">Se déconnecter</a>
+        <?php ;} ?>
         </div>
     </div>
     </nav>

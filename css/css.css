@@ -28,3 +28,9 @@
     align-items: center;
     justify-content: center;
 }
+.form-login{
+    width: 50%;
+    align-self: center;
+    justify-self: center;
+    border: 1px solid gray;
+}
