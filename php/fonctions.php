@@ -181,3 +181,14 @@ function ajout_quant_panier($conn){
     header("location:panier.php");
     exit;
   }
+
+  function valider_panier($conn){
+    $id_utilisateur = $_POST['id_util'];
+
+    $sql = "DELETE FROM panier WHERE client_id=?";
+    $stmt= $conn->prepare($sql);
+    $stmt->execute([$id_utilisateur]);
+    $_SESSION['info_panier'] = "La commande a été validée !";
+    header("location:panier.php");
+    exit;
+  }

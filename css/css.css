@@ -19,3 +19,12 @@
 .panier{
     padding-right: 5px;
 }
+.forme_panier{
+    display: flex;
+}
+.partie_panier{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
