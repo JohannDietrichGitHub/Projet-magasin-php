@@ -13,6 +13,7 @@
         <tbody>
         <?php 
             $prix_total = 0;
+            $quantite_total = 0;
             $num_article_actuel = 0; //compteur pour les id des articles
             //selectionne l'id des articles dans le panier
             $obtention_id_article = $conn->prepare("SELECT * FROM panier WHERE client_id = ?"); 
@@ -25,6 +26,7 @@
                 $infos_article = $obtention_infos_article->fetchAll();
                 $num_article_actuel +=1;
                 foreach ($infos_article as $obtention_infoss_article ) { //affiche une ligne par article avec le nom, le prix et la quantité
+                    $quantite_total += $obtention_id_article['quantite'];
                     $prix_total+=$obtention_infoss_article['prix_ht']*$obtention_id_article['quantite'];
                     echo "<tr>";
                     echo "<th> $obtention_infoss_article[nom]</th>";
@@ -48,7 +50,7 @@
         ?>
         </tbody>
     </table>
-  <?php         echo "<div class='partie_panier'><div class='prix_total'> Le prix total serait de : " .$prix_total. ' euros </div>';
+  <?php         echo "<div class='partie_panier'><div class='prix_total'> Le prix total serait de : " .$prix_total. ' euros <br> Quanitté : ' .$quantite_total. '</div>';
                 echo "<form action='valider_panier.php' class='panier' method='post'>
                 <button name='id_util' class='btn btn-primary'value=".$_SESSION['id'].">Valider le panier</button></form></div></div>";
 

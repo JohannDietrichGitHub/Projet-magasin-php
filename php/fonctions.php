@@ -41,11 +41,14 @@ function modification_article($conn)
     $stmt= $conn->prepare($sql);
     $stmt->execute([$_POST['nom'], $_POST['reference'], $_POST['prix'], $_POST['taxe'], $promo, $nouv, $_POST['id']]);
     $_SESSION['message'] = $_POST['nom']." à bien été modifié !";
+    header("location:articles.php");
+    exit;
   }
   else {
     $_SESSION['alert']=$verification['message'];
+    header("location:modificationarticle.php");
+    exit;
   }
-  header("location:articles.php");
 
 }
 
@@ -72,7 +75,11 @@ function all_verif($conn, $isUpdate=false)
             $reference = "";
         }
         else { $reference = $user[0]; }
-    
+        if ($_POST['nom'] =="" OR $_POST['prix']=="" OR $_POST['taxe']=="" OR $_POST['reference']==""){
+            $resultat['message'] = "Veuillez remplir les champs obligatoires";
+            exit;
+        }
+
         if (!$isUpdate AND $_POST['reference'] == $reference){
           $resultat['message'] = "Référence déjà existante ";
         }

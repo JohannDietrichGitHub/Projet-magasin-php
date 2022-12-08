@@ -5,7 +5,7 @@
 	echo "<div class='alert alert-primary' role='alert'>$_SESSION[message]</div>";
   }
   unset($_SESSION['message']);
-  $_SESSION['id'] = 1; //test pour envoi dans le panier
+  $_SESSION['id'] = 2; //test pour envoi dans le panier
   ?>
   <center>
 	<br>
