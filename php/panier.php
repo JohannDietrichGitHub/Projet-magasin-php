@@ -1,6 +1,6 @@
 <?php require_once('header.php'); ?>
 <body>
-    <?php if (isset($_SESSION['id'])){?>
+    <?php if (isset($_SESSION['id']) AND $_SESSION["droits"]==0){?>
   <div class="forme_panier">
     <table class="table" id="articles">
         <thead>

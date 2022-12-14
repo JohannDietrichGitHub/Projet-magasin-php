@@ -5,6 +5,7 @@
       echo "<div class='alert alert-danger' role='alert'>$_SESSION[alert]</div>";
     }
     unset($_SESSION['alert']);
+    if (isset($_SESSION["droits"]) AND  $_SESSION["droits"]==1){
   ?>
   <center>
   <br><br>
@@ -88,6 +89,6 @@
       <button type="submit" class="btn btn-primary">Modifier</button>
     </form>
     <?php } ?>
-
+    <?php ;} else { echo "<div class='presentation'><h2> Vous n'avez pas le droit d'être sur cette page</h2></div>";}?>
   </center>
 </body>

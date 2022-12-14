@@ -216,6 +216,7 @@ function ajout_quant_panier($conn){
                      $_SESSION['id'] = $user['id'];
                      $_SESSION["username"] = $_POST["username"]; /* Crée les variables de sessions permettant donc de confirmer la connection et plus */
                      $_SESSION["droits"] = $droits;
+                     $_SESSION['conn'] = "Bienvenue ".$_SESSION["username"]."!";
                      //creation de logs
                      header("location:articles.php");  
                      exit;
@@ -234,6 +235,119 @@ function ajout_quant_panier($conn){
 
 function logout(){
     session_destroy();//déconnecte l'utilisateur
-    header("location: login.php");
+    session_start();
+    $_SESSION['conn'] = "Vous vous êtes déconnecté(e)";
+    header("location: articles.php");
     exit;
+}
+
+function infos_util($conn){
+    $stmt = $conn->prepare("SELECT * FROM clients WHERE id=?");
+    $stmt->execute([$_SESSION['id']]); 
+    return $stmt->fetch();
+}
+
+function chercher_ville($conn){
+    $id_ville = infos_util($conn)['ville_id'];
+    $stmt = $conn->prepare("SELECT * FROM villes WHERE id=?");
+    $stmt->execute([$id_ville]);
+    return $stmt->fetch();
+}
+
+function chercher_parrain($conn){
+    $id_parrain = infos_util($conn)['parrain_id'];
+    $stmt = $conn->prepare("SELECT * FROM clients WHERE id=?");
+    $stmt->execute([$id_parrain]);
+    $retour = $stmt->fetch();
+    if ($retour == 1 OR $retour == NULL){
+        return "Pas de parrain";
+    }
+    else {
+        $prenom = $retour['prenom'];
+        $nom = $retour['nom'];
+        return $nom." ".$prenom;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // A VERIFIER LE FONCTIONNEMENT COMPLET !!!! TODO
+function creer_compte($conn){
+    if ($_POST['prenom'] =="" OR $_POST['nom']=="" OR $_POST['email']=="" OR $_POST['naiss']=="" OR $_POST['adresse']=="" OR $_POST['ville']=="" OR $_POST['password']=="" ){
+        $resultat['message'] = "Veuillez remplir les champs obligatoires";
+        exit;
+    }
+    else {
+        $stmt = $conn->prepare("SELECT * FROM villes WHERE nom=?");   //vérifie si la vlle existe, et si elle n'existe pas, la crée dans la BDD
+        $stmt->execute([strtoupper($_POST['ville'])]);
+        $info_ville= $stmt->fetch();
+        if ($info_ville == NULL) {
+            $data_ville =[
+                'code_postal' =>00000,
+                'nom' =>strtoupper($_POST['ville'])
+            ];
+            $sql = "INSERT INTO villes (code_postal, nom) VALUES (:code_postal, :nom )"; //Insertion des donnés
+            $conn->prepare($sql)->execute($data_ville);
+        }
+        else{
+            $id_de_ville = $info_ville['id'];
+        }
+
+        if($_POST['parrain']==""){   //vérifie si le parrain exite, et si c'est le cas, le lie a l'utilisateur
+            $id_de_parrain = NULL;
+        }
+        else {
+            $prenomnomparrain = explode(" ",$_POST['parrain']);
+            $stmt = $conn->prepare("SELECT * FROM clients WHERE prenom=?");   //vérifie si la vlle existe, et si elle n'existe pas, la crée dans la BDD
+            $stmt->execute([ucfirst($prenomnomparrain['0'])]);
+            $info_parrain= $stmt->fetchAll();
+            if ($info_parrain==NULL){
+                $id_de_parrain=NULL;
+                $_SESSION['message'] ="le parrain n'est pas valable";
+                exit;
+            }
+            else {
+                if ($info_parrain['nom'] == $prenomnomparrain[1]){
+                    $id_de_parrain = $info_parrain['id'];
+                }
+            }
+        }
+
+        $data_util = [
+            'prenom' =>$_POST['prenom'],
+            'nom' =>$_POST['nom'],
+            'email' =>$_POST['email'],
+            'date_naissance' =>$_POST['naiss'],
+            'adresse' =>$_POST['adresse'],
+            'ville_id' =>$id_de_ville,
+            'parrain_id' =>$id_de_parrain,
+            'mot_de_passe' =>password_hash($_POST['password'],PASSWORD_ARGON2ID),
+            'administrateur' => NULL
+        ];
+        $sql = "INSERT INTO clients (prenom, nom, email, date_naissance, adresse, ville_id, parrain_id, mot_de_passe, administrateur) VALUES (:prenom, :nom, :email, :date_naissance, :adresse, :ville_id, :parrain_id, :mot_de_passe, :administrateur)"; //Insertion des donnés
+        $conn->prepare($sql)->execute($data_util);
+        $_SESSION['info_panier'] = "L'article à bien été inséré dans le panier";
+        header("location:panier.php");
+        exit;
+    }
+
 }

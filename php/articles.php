@@ -5,7 +5,10 @@
 	echo "<div class='alert alert-primary' role='alert'>$_SESSION[message]</div>";
   }
   unset($_SESSION['message']);
-  ?>
+  if (isset($_SESSION['conn'])){ 
+	echo "<div class='alert alert-success' role='alert'>".$_SESSION['conn'] ."</div>";}
+	unset($_SESSION['conn']);
+	?>
   <center>
 	<br>
 	<table class="table" id="articles">
