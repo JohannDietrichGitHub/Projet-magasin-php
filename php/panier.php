@@ -66,7 +66,7 @@
                 unset($_SESSION['info_panier']);
             }
             else {
-                echo "<h1> Veuillez vous connecter pour accéder au panier</h1>";
+                echo "<div class='presentation'><h2> Veuillez vous connecter pour accéder au panier</h2></div>";
             }
   ?>
 </body>
