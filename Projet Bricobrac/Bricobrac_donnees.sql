@@ -52,6 +52,7 @@ CREATE TABLE panier(
     Primary Key(id)
 ) CHARACTER SET utf8;
 
+
 -- Insertion des données articles
 INSERT INTO articles values(1, 'marteau de menuisier bois verni',81968453,8.90,20,NULL, 0);
 INSERT INTO articles values(2, 'marteau massette fibre de verre',80166978,21.90,20,NULL, 0);

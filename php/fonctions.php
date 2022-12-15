@@ -21,7 +21,6 @@ function insertion_articles($conn)
     $_SESSION['alert']=$verification['message'];
     header("location:ajoutarticle.php");
     exit;
-
   }
 }
 
@@ -189,16 +188,48 @@ function ajout_quant_panier($conn){
     exit;
   }
 
-  function valider_panier($conn){
+  function valider_panier($conn){ //todo
     $id_utilisateur = $_POST['id_util'];
 
-    $sql = "DELETE FROM panier WHERE client_id=?";
+    $stmt = $conn->prepare("SELECT * FROM panier WHERE client_id=?");
+    $stmt->execute([$id_utilisateur]);
+    $paniers = $stmt->fetchAll();
+    $id_darticles = [];
+    $prix_total= 0;
+    $articles_a_envoyer_bdd ="";
+
+    $data_commande = [  //bloc pour insérer toutes les données d'un coup
+        'id_client' => $_SESSION['id'],
+        'articles' => $articles_a_envoyer_bdd,
+        'date' => time_now(),
+        'prix' => $prix_total
+    ];
+    //insère les données dans la table 'commandes'
+    $sql = "INSERT INTO commandes (id_client, articles, date, prix) VALUES (:id_client, :articles, :date, :prix)"; //Insertion des donnés
+    $conn->prepare($sql)->execute($data_commande);
+
+
+    $sql = "DELETE FROM panier WHERE client_id=?";  //supprime la panier quand tout est fini
     $stmt= $conn->prepare($sql);
     $stmt->execute([$id_utilisateur]);
     $_SESSION['info_panier'] = "La commande a été validée !";
     header("location:panier.php");
     exit;
   }
+
+  function time_now(){ //défini le temps et la date actuel d'une connection ou déconnection
+    date_default_timezone_set('Europe/Paris');
+    $jour_Actuel=date("d");
+    $mois_Actuel=date("m");
+    $annee_Actuelle=date("Y");
+    $heure_Actuelle=date("H");
+    $minute_Actuelle=date("i");
+    $seconde_Actuelle=date("s");
+
+    return ("$annee_Actuelle-$mois_Actuel-$jour_Actuel $heure_Actuelle:$minute_Actuelle:$seconde_Actuelle");
+}
+
+
 
   function connection_uti($conn){
     if(!empty($_POST))  
@@ -208,7 +239,20 @@ function ajout_quant_panier($conn){
         $passwd = $stmt->fetch();
 
         if ($passwd !=null){
-            if (/* password_verify( */$_POST["password"]== $passwd['mot_de_passe']){    
+          if ($passwd['mot_de_passe'] == "a"){
+            if ($_POST["password"] == "a"){
+              $stmt = $conn->prepare("SELECT * FROM clients WHERE email = :username"); /* permet de chercher la colone"droits" determinant si un utilisateur est administrateur ou non */
+              $stmt->execute(['username' => $_POST["username"]]); 
+                   $user = $stmt->fetch();
+                   $droits = $user['administrateur']; //vérifiie dans la BDD si l'utilisateur a des droits administrateurs
+                   $_SESSION['id'] = $user['id'];
+                   $_SESSION["username"] = $_POST["username"]; /* Crée les variables de sessions permettant donc de confirmer la connection et plus */
+                   $_SESSION["droits"] = $droits;
+                   $_SESSION['conn'] = "Bienvenue ". $_POST["username"]."!";
+                   //creation de logs 
+                   header("location:articles.php");  
+                   exit;}
+          }elseif (password_verify($_POST["password"], $passwd['mot_de_passe']) ){    
                 $stmt = $conn->prepare("SELECT * FROM clients WHERE email = :username"); /* permet de chercher la colone"droits" determinant si un utilisateur est administrateur ou non */
                 $stmt->execute(['username' => $_POST["username"]]); 
                      $user = $stmt->fetch();
@@ -216,8 +260,8 @@ function ajout_quant_panier($conn){
                      $_SESSION['id'] = $user['id'];
                      $_SESSION["username"] = $_POST["username"]; /* Crée les variables de sessions permettant donc de confirmer la connection et plus */
                      $_SESSION["droits"] = $droits;
-                     $_SESSION['conn'] = "Bienvenue ".$_SESSION["username"]."!";
-                     //creation de logs
+                     $_SESSION['conn'] = "Bienvenue ". $_POST["username"]."!";
+                     //creation de logs 
                      header("location:articles.php");  
                      exit;
                 }  
@@ -272,45 +316,13 @@ function chercher_parrain($conn){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- // A VERIFIER LE FONCTIONNEMENT COMPLET !!!! TODO
 function creer_compte($conn){
     if ($_POST['prenom'] =="" OR $_POST['nom']=="" OR $_POST['email']=="" OR $_POST['naiss']=="" OR $_POST['adresse']=="" OR $_POST['ville']=="" OR $_POST['password']=="" ){
         $resultat['message'] = "Veuillez remplir les champs obligatoires";
         exit;
     }
     else {
-        $stmt = $conn->prepare("SELECT * FROM villes WHERE nom=?");   //vérifie si la vlle existe, et si elle n'existe pas, la crée dans la BDD
-        $stmt->execute([strtoupper($_POST['ville'])]);
-        $info_ville= $stmt->fetch();
-        if ($info_ville == NULL) {
-            $data_ville =[
-                'code_postal' =>00000,
-                'nom' =>strtoupper($_POST['ville'])
-            ];
-            $sql = "INSERT INTO villes (code_postal, nom) VALUES (:code_postal, :nom )"; //Insertion des donnés
-            $conn->prepare($sql)->execute($data_ville);
-        }
-        else{
-            $id_de_ville = $info_ville['id'];
-        }
+        $id_de_ville = $_POST['ville'];
 
         if($_POST['parrain']==""){   //vérifie si le parrain exite, et si c'est le cas, le lie a l'utilisateur
             $id_de_parrain = NULL;
@@ -340,7 +352,7 @@ function creer_compte($conn){
             'adresse' =>$_POST['adresse'],
             'ville_id' =>$id_de_ville,
             'parrain_id' =>$id_de_parrain,
-            'mot_de_passe' =>password_hash($_POST['password'],PASSWORD_ARGON2ID),
+            'mot_de_passe' =>password_hash($_POST['password'],PASSWORD_DEFAULT),
             'administrateur' => NULL
         ];
         $sql = "INSERT INTO clients (prenom, nom, email, date_naissance, adresse, ville_id, parrain_id, mot_de_passe, administrateur) VALUES (:prenom, :nom, :email, :date_naissance, :adresse, :ville_id, :parrain_id, :mot_de_passe, :administrateur)"; //Insertion des donnés

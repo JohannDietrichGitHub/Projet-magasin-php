@@ -19,19 +19,27 @@
             </div>
             <div class="form-group">
                 <label for="naiss">Date de naissance  </label>
-                <input type="text" class="form-control" id="naiss" name="naiss"  placeholder="naiss" required>
+                <input type="text" class="form-control" id="naiss" name="naiss"  placeholder="1998-02-25" required>
             </div>
             <div class="form-group">
                 <label for="adresse">Adresse </label>
                 <input type="text" class="form-control" id="adresse" name="adresse"  placeholder="adresse" required>
             </div>
             <div class="form-group">
-                <label for="ville">Ville </label>
-                <input type="text" class="form-control" id="ville" name="ville"  placeholder="villes" required>
+            <label>Ville </label><br>
+            <select name="ville" class="form-select choisir_ville" aria-label="Default select example">
+                <?php
+                $data = $conn->query("SELECT * FROM villes")->fetchAll();
+                foreach ($data as $row) 
+                {
+                    echo "<option value=$row[id]> $row[nom] </option>";
+                }
+                ?>
+            </select>
             </div>
             <div class="form-group">
                 <label for="parrain">Parrain  </label>
-                <input type="text" class="form-control" id="parrain" name="parrain"  placeholder="prenom_du_parrain nom_du_parrain" required>
+                <input type="text" class="form-control" id="parrain" name="parrain"  placeholder="prenom_du_parrain nom_du_parrain">
             </div>
             <div class="form-group">
                 <label for="password">Mot de passe</label>

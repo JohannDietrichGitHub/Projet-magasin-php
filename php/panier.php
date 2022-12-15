@@ -51,7 +51,7 @@
         ?>
         </tbody>
     </table>
-  <?php         echo "<div class='partie_panier'><div class='prix_total'> Le prix total serait de : " .$prix_total. ' euros <br> Quanitté : ' .$quantite_total. '</div>';
+  <?php         echo "<div class='partie_panier'><div class='prix_total'> Le prix total serait de : " .$prix_total. ' euros <br> Quantité : ' .$quantite_total. '</div>';
                 echo "<form action='valider_panier.php' class='panier' method='post'>
                 <button name='id_util' class='btn btn-primary'value=".$_SESSION['id'].">Valider le panier</button></form></div></div>";
 
