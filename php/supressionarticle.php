@@ -39,5 +39,5 @@
 
   }
   ;} else { echo "<div class='presentation'><h2> Vous n'avez pas le droit d'être sur cette page</h2></div>";}?>
-  ?>
+  
 </body>

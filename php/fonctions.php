@@ -57,12 +57,11 @@ function modification_article($conn)
 function all_verif($conn, $isUpdate=false)
 {
   $resultat = ['success' => false, 'message' => ''];
-
-    if(isset($_POST['nom'])){   /* vérifie si le formulaire a été envoyé */
-
-        //Défini toutes les variables permettant de vérifier si le formulaire rend des nombres
-        $referencenbr = intval($_POST['reference']);
-    
+    if(!empty($_POST)){   /* vérifie si le formulaire a été envoyé */
+      //Défini toutes les variables permettant de vérifier si le formulaire rend des nombres
+      $referencenbr = intval($_POST['reference']);
+      
+      
         $prix = intval($_POST['prix']);
     
         $taxe = intval($_POST['taxe']);
@@ -76,7 +75,7 @@ function all_verif($conn, $isUpdate=false)
         else { $reference = $user[0]; }
         if ($_POST['nom'] =="" OR $_POST['prix']=="" OR $_POST['taxe']=="" OR $_POST['reference']==""){
             $resultat['message'] = "Veuillez remplir les champs obligatoires";
-            exit;
+            return $resultat;
         }
 
         if (!$isUpdate AND $_POST['reference'] == $reference){
@@ -188,26 +187,53 @@ function ajout_quant_panier($conn){
     exit;
   }
 
-  function valider_panier($conn){ //todo
+  function valider_panier($conn){ 
     $id_utilisateur = $_POST['id_util'];
+
+    $stmt = $conn->prepare("SELECT * FROM commandes WHERE client_id=?");
+    $stmt->execute([$_POST["id_util"]]); 
+    $id_commandee = $stmt->fetch();
+    //die(var_dump($id_commandee[1]));
+    if ($id_commandee==NULL){
+      $id_commande = 1;
+    }
+    else {
+      $id_commande = $id_commandee[1];
+      //die(var_dump($id_commande));
+      $id_commande = $id_commande + 1; 
+    }
+    $data_comm = [
+      'id_commande' => $id_commande,
+      'client_id' => $_SESSION["id"],
+    ];
+
+    $sql = "INSERT INTO commandes (id_commande, client_id) VALUES (:id_commande, :client_id)"; //Insertion des donnés
+    $conn->prepare($sql)->execute($data_comm);
 
     $stmt = $conn->prepare("SELECT * FROM panier WHERE client_id=?");
     $stmt->execute([$id_utilisateur]);
-    $paniers = $stmt->fetchAll();
-    $id_darticles = [];
-    $prix_total= 0;
-    $articles_a_envoyer_bdd ="";
+    $infos_panier = $stmt->fetchAll();
 
-    $data_commande = [  //bloc pour insérer toutes les données d'un coup
-        'id_client' => $_SESSION['id'],
-        'articles' => $articles_a_envoyer_bdd,
-        'date' => time_now(),
-        'prix' => $prix_total
-    ];
-    //insère les données dans la table 'commandes'
-    $sql = "INSERT INTO commandes (id_client, articles, date, prix) VALUES (:id_client, :articles, :date, :prix)"; //Insertion des donnés
-    $conn->prepare($sql)->execute($data_commande);
+    foreach ($infos_panier as $art){
+    $id_article = $art['article_id'];
+    $quantite = $art['quantite'];
 
+    $stmt = $conn->prepare("SELECT * FROM articles WHERE id=?");
+    $stmt->execute([$id_article]);
+    $infos_article = $stmt->fetch();
+    $nom_article = $infos_article['nom'];
+    $prix_article = $infos_article['prix_ht'];
+
+      $data_articles = [
+        'id_commande' => $id_commande,
+        'client_id' =>$id_utilisateur,
+        'article' =>$nom_article,
+        'quantite' => $quantite,
+        'prix_total' => $prix_article,
+      ];
+      $sql = "INSERT INTO articles_commandes (id_commande, client_id, article, quantite, prix_total) VALUES (:id_commande, :client_id, :article, :quantite, :prix_total)"; //Insertion des donnés
+      $conn->prepare($sql)->execute($data_articles);
+    }
 
     $sql = "DELETE FROM panier WHERE client_id=?";  //supprime la panier quand tout est fini
     $stmt= $conn->prepare($sql);

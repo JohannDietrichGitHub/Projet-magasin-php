@@ -8,12 +8,12 @@
       <li class="nav-item active">
       <a class="nav-item nav-link active" href="articles.php"">Articles</a>
       </li>
-      <?php if (isset($_SESSION["droits"]) AND  $_SESSION["droits"]==0){ ?>
+      <?php if (array_key_exists("droits", $_SESSION) AND $_SESSION["droits"]==NULL){ ?>
       <li class="nav-item">
         <a class="nav-item nav-link active" href="panier.php"">Panier</a>
       </li>
       <?php ;} ?>
-      <?php if (isset($_SESSION["droits"]) AND  $_SESSION["droits"]==1){ ?>
+      <?php if (array_key_exists("droits", $_SESSION) AND $_SESSION["droits"]==1){ ?>
       <li class="nav-item">
         <a class="nav-item nav-link active" href="ajoutarticle.php"">Ajouter un article</a>
       </li>

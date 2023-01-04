@@ -4,6 +4,8 @@ DROP TABLE IF EXISTS panier;
 DROP TABLE IF EXISTS clients;
 DROP TABLE IF EXISTS villes;
 DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS commandes;
+DROP TABLE IF EXISTS articles_commandes;
 
 -- Création de la table villes
 CREATE TABLE villes(
@@ -49,6 +51,26 @@ CREATE TABLE panier(
     article_id int UNSIGNED NOT NULL,
     FOREIGN KEY (article_id) REFERENCES articles(id),
     quantite int UNSIGNED NOT NULL,
+    Primary Key(id)
+) CHARACTER SET utf8;
+
+
+CREATE TABLE commandes(
+    id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    id_commande int,
+    client_id int UNSIGNED NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES clients(id),
+    Primary Key(id)
+) CHARACTER SET utf8;
+
+
+CREATE TABLE articles_commandes(
+    id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    id_commande int NOT NULL,
+    client_id int UNSIGNED NOT NULL,
+    article varchar(128),
+    quantite int UNSIGNED NOT NULL,
+    prix_total int UNSIGNED NOT NULL,
     Primary Key(id)
 ) CHARACTER SET utf8;
 

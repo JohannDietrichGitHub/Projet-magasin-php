@@ -14,19 +14,19 @@
     <form action='insertion_article.php' class="table" method="POST">
       <div class="form-group">
         <label for="nom">Nom</label>
-        <input type="text" class="form-control" name="nom" id="nom"  placeholder="Entrez le nom de l'article" required>
+        <input type="text" class="form-control" name="nom" id="nom"  placeholder="Entrez le nom de l'article" >
       </div>
       <div class="form-group">
         <label for="reference">Reference</label>
-        <input type="text" class="form-control" name="reference" id="reference"  placeholder="Entrez la référence" required>
+        <input type="text" class="form-control" name="reference" id="reference"  placeholder="Entrez la référence" >
       </div>
       <div class="form-group">
         <label for="prix">Prix</label>
-        <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" required>
+        <input type="text" class="form-control" name="prix" id="prix" placeholder="Entrez le prix" >
       </div>
       <div class="form-group">
         <label for="taxe">Taxe</label>
-        <input type="text" class="form-control" name="taxe" id="taxe" placeholder="Entrez la taxe (20 de base)" value=20 required>
+        <input type="text" class="form-control" name="taxe" id="taxe" placeholder="Entrez la taxe (20 de base)" value=20 >
       </div>
       <div class="form-group">
         <label for="promotion">promotion</label>
