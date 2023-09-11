@@ -65,6 +65,9 @@
                 }
                 unset($_SESSION['info_panier']);
             }
+            elseif ($_SESSION["droits"]==1) {
+                echo "<div class='presentation'><h2> Vous ne pouvez pas commander en tant qu'administrateur</h2></div>";
+            }
             else {
                 echo "<div class='presentation'><h2> Veuillez vous connecter pour accéder au panier</h2></div>";
             }

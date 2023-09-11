@@ -1,7 +1,7 @@
 <?php
 $DB_host = "localhost";
 $DB_user = "root";
-$DB_pass = "";
+$DB_pass = "aaaa";
 $DB_name = "bricobrac";
 
 try
